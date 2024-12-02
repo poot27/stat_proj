@@ -6,7 +6,7 @@ while getopts "i:o:" opt; do
     case ${opt} in
         i) INPUT_FILE=${OPTARG} ;;
         o) OUTPUT_FILE=${OPTARG} ;;
-        *) usage ;;
+        *) exit 1 ;;
     esac
 done
 
@@ -27,4 +27,9 @@ while IFS= read -r line; do
     echo "$DATE: $status" >> "$OUTPUT_FILE"
 done < "$INPUT_FILE"
 
-echo "Results saved to $OUTPUT_FILE."
+# Echo numbers
+FAIL=$(grep -o 'fail' "$OUTPUT_FILE" | wc -l)
+PASS=$(grep -o 'pass' "$OUTPUT_FILE" | wc -l)
+TOTAL=$(wc -l < "$OUTPUT_FILE")
+echo "Summary is $FAIL fails, $PASS passes, total is $TOTAL"
+echo "Results saved to $OUTPUT_FILE"
